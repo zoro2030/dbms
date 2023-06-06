@@ -1,6 +1,4 @@
-*********************************
-Name : Samrat Ashok Tikone 
-Roll No. : 3259
+
 *********************************     
                                                                  Practical No :4
 Unnamed PL/SQLcode block: Use of Control structure and Exception handling is mandatory.

@@ -1,7 +1,4 @@
 *********************************
-Name : Samrat Ashok Tikone 
-Roll No. : 3259
-*********************************
                                                                   Practical No: 12
 
 Database Connectivity: Write a program to implement Mongo DB database connectivity with any front end language to implement Database navigation operations(add, delete, edit etc.)

@@ -1,0 +1,173 @@
+>use avcoe
+switched to db avcoe
+
+> db.te.insert({"_id":1,"rollno":1,"sub":"cfca","name":"rani","marks":90})
+
+> db.te.insert({"_id":2,"rollno":2,"sub":"cfca","name":"prajkta","marks":91})
+
+> db.te.insert({"_id":3,"rollno":3,"sub":"toc","name":"shital","marks":45})
+
+>  db.te.insert({"_id":4,"rollno":4,"sub":"dbms","name":"priya","marks":50})
+
+> db.te.insert({"_id":5,"rollno":5,"sub":"dbms","name":"riya","marks":50})
+
+
+//Simple Index
+
+> db.te.ensureIndex({sub:1})
+
+//Compound Index
+
+> db.te.ensureIndex({sub:1,marks:1})
+
+//Aggregate Function SUM
+
+> db.te.aggregate([{$group:{_id:"$sub",total:{$sum:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 100
+		},
+		{
+			"_id" : "toc",
+			"total" : 45
+		},
+		{
+			"_id" : "cfca",
+			"total" : 181
+		}
+	],
+	"ok" : 1
+}
+
+//Aggregate Function MIN
+> db.te.aggregate([{$group:{_id:"$sub",total:{$min:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 50
+		},
+		{
+			"_id" : "toc",
+			"total" : 45
+		},
+		{
+			"_id" : "cfca",
+			"total" : 90
+		}
+	],
+	"ok" : 1
+}
+
+//Aggregate Function MAX
+> db.te.aggregate([{$group:{_id:"$sub",total:{$max:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 50
+		},
+		{
+			"_id" : "toc",
+			"total" : 45
+		},
+		{
+			"_id" : "cfca",
+			"total" : 91
+		}
+	],
+	"ok" : 1
+}
+
+//Aggregate Function AVG
+> db.te.aggregate([{$group:{_id:"$sub",total:{$avg:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 50
+		},
+		{
+			"_id" : "toc",
+			"total" : 45
+		},
+		{
+			"_id" : "cfca",
+			"total" : 90.5
+		}
+	],
+	"ok" : 1
+}
+
+//Aggregate Function PUSH:Insert value to an array in resulting document
+
+> db.te.aggregate([{$group:{_id:"$sub",rollno:{$push:"$rollno"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"rollno" : [
+				4,
+				5
+			]
+		},
+		{
+			"_id" : "toc",
+			"rollno" : [
+				3
+			]
+		},
+		{
+			"_id" : "cfca",
+			"rollno" : [
+				1,
+				2
+			]
+		}
+	],
+	"ok" : 1
+}
+
+//Aggregate Function FIRST:Get first document from source document
+>  db.te.aggregate([{$group:{_id:"$sub",name:{$first:"$name"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"name" : "priya"
+		},
+		{
+			"_id" : "toc",
+			"name" : "shital"
+		},
+		{
+			"_id" : "cfca",
+			"name" : "rani"
+		}
+	],
+	"ok" : 1
+}
+
+//Aggregate Function LAST:Get last document from source document
+> db.te.aggregate([{$group:{_id:"$sub",name:{$last:"$name"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"name" : "riya"
+		},
+		{
+			"_id" : "toc",
+			"name" : "shital"
+		},
+		{
+			"_id" : "cfca",
+			"name" : "prajkta"
+		}
+	],
+	"ok" : 1
+}
+> 
+

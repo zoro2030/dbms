@@ -1,0 +1,166 @@
+> use aggredb
+switched to db aggredb
+
+> db.te.insert({"_id":1,"rollno":1,"sub":"cfca","name":"kiran","marks":90})
+
+> db.te.insert({"_id":2,"rollno":2,"sub":"cfca","name":"santosh","marks":99})
+> 
+db.te.insert({"_id":3,"rollno":3,"sub":"toc","name":"ravi","marks":40})
+
+> db.te.insert({"_id":4,"rollno":4,"sub":"dbms","name":"prem","marks":50})
+
+> db.te.insert({"_id":5,"rollno":5,"sub":"dbms","name":"prity","marks":50})
+
+
+//simple index
+> db.te.ensureIndex({sub:1})
+
+//compound index
+> db.te.ensureIndex({sub:1,marks:1})
+
+
+//sum
+> db.te.aggregate([{$group:{_id:"$sub",total:{$sum:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 100
+		},
+		{
+			"_id" : "toc",
+			"total" : 40
+		},
+		{
+			"_id" : "cfca",
+			"total" : 189
+		}
+	],
+	"ok" : 1
+}
+//min
+> db.te.aggregate([{$group:{_id:"$sub",total:{$min:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 50
+		},
+		{
+			"_id" : "toc",
+			"total" : 40
+		},
+		{
+			"_id" : "cfca",
+			"total" : 90
+		}
+	],
+	"ok" : 1
+}
+//max
+> db.te.aggregate([{$group:{_id:"$sub",total:{$max:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 50
+		},
+		{
+			"_id" : "toc",
+			"total" : 40
+		},
+		{
+			"_id" : "cfca",
+			"total" : 99
+		}
+	],
+	"ok" : 1
+}
+
+//avg
+> db.te.aggregate([{$group:{_id:"$sub",total:{$avg:"$marks"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"total" : 50
+		},
+		{
+			"_id" : "toc",
+			"total" : 40
+		},
+		{
+			"_id" : "cfca",
+			"total" : 94.5
+		}
+	],
+	"ok" : 1
+}
+
+//push-insert value to an array in resulting document
+> db.te.aggregate([{$group:{_id:"$sub",rollno:{$push:"$rollno"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"rollno" : [
+				4,
+				5
+			]
+		},
+		{
+			"_id" : "toc",
+			"rollno" : [
+				3
+			]
+		},
+		{
+			"_id" : "cfca",
+			"rollno" : [
+				1,
+				2
+			]
+		}
+	],
+	"ok" : 1
+}
+
+//first-get first document from source document
+> db.te.aggregate([{$group:{_id:"$sub",name:{$first:"$name"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"name" : "prem"
+		},
+		{
+			"_id" : "toc",
+			"name" : "ravi"
+		},
+		{
+			"_id" : "cfca",
+			"name" : "kiran"
+		}
+	],
+	"ok" : 1
+}
+
+//last-get last document from source document
+> db.te.aggregate([{$group:{_id:"$sub",name:{$last:"$name"}}}])
+{
+	"result" : [
+		{
+			"_id" : "dbms",
+			"name" : "prity"
+		},
+		{
+			"_id" : "toc",
+			"name" : "ravi"
+		},
+		{
+			"_id" : "cfca",
+			"name" : "santosh"
+		}
+	],
+	"ok" : 1
+}

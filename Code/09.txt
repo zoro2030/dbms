@@ -1,7 +1,4 @@
-*********************************
-Name : Samrat Ashok Tikone 
-Roll No. : 3259
-*********************************
+***************
                                                             Practical No :9
 
        Title: Design and Develop MongoDB Queries using CRUD operations.(UseCRUDoperations, SAVE method, logical operators etc.). 

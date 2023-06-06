@@ -1,6 +1,4 @@
-*********************************
-Name : Samrat Ashok Tikone 
-Roll No. : 3259
+
 *********************************
                                                                         Practical NO: 7
 Database Trigger (All Types: Row level and Statement level triggers, Before and After Triggers).

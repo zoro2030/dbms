@@ -1,0 +1,96 @@
+
+SQL> create table stud_marks(rollno number, name varchar(10), tot_marks number,
+primary key(rollno));
+
+Table created.
+
+SQL> insert into stud_marks values(1, 'ram', 1010);
+
+1 row created.
+
+SQL> insert into stud_marks values(2, 'ramesh', 810);
+
+1 row created.
+
+SQL> insert into stud_marks values(3, 'seeta', 930);
+
+1 row created.
+
+
+SQL> insert into stud_marks values(4, 'geeta', 900);
+
+1 row created.
+
+SQL> select * from stud_marks;
+
+    ROLLNO NAME        TOT_MARKS
+---------- ---------- ----------
+         1 ram              1010
+         2 ramesh            810
+         3 seeta             930
+         4 geeta             900
+
+SQL> create table result(rollno number, name varchar(10), class varchar(20), foreign key(rollno) references stud_marks(rollno));
+
+Table created.
+
+SQL> insert into result values (1, 'ram', '');
+
+1 row created.
+
+SQL> insert into result values (2, 'ramesh', '');
+
+1 row created.
+
+SQL> insert into result values (3, 'seeta', '');
+
+1 row created.
+
+SQL> insert into result values (4, 'geeta', '');
+
+1 row created.
+
+
+
+create or replace procedure proc_grade( roll in number)
+            as
+          t stud_marks.tot_marks%type;
+              begin
+        select tot_marks into t from stud_marks  where rollno=roll;
+             if (t<=1500 and t>=990) then
+     update result set class='distinction' where rollno=roll;
+   dbms_output.put_line(roll);
+            dbms_output.put_line('distinction');
+          elsif (t<=989 and t>=900 ) then
+     update result set class='first class' where rollno=roll;
+           dbms_output.put_line('first class');
+          elsif(t<=899 and t>=825)then
+    update result set class='second class' where rollno=roll;
+   dbms_output.put_line('second class');
+          else
+        update result set class='pass' where rollno=roll;
+         end if;
+        end;
+   /
+
+Procedure created.
+
+SQL> set serveroutput on;
+
+
+SQL> execute proc_grade(1);
+1
+distinction
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from result;
+
+    ROLLNO NAME       CLASS
+---------- ---------- --------------------
+         1 ram        distinction
+         2 ramesh
+         3 seeta
+         4 geeta
+
+SQL>

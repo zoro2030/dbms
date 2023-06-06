@@ -1,0 +1,242 @@
+
+SQL> declare
+    rn info.rollno%type;
+    nm info.name%type;
+    bc info.branch%type;
+    cursor c_info is select * from info union select * from info1;
+    begin
+    open c_info;
+    loop
+    fetch c_info into rn,nm,bc;
+  exit when c_info%notfound;
+insert into info1 values(rn,nm,bc);
+  dbms_output.put_line(rn ||' '||nm||' '||bc);
+  end loop;
+  close c_info;
+  end;
+  /
+
+
+
+
+SQL> connect system
+Enter password:
+Connected.
+SQL> select * from info ;
+
+    ROLLNO NAME                 BRANCH
+---------- -------------------- ----------
+         1 ram                  comp
+         2 shyam                etc
+         3 geeta                mech
+
+SQL> select * from info1 ;
+
+    ROLLNO NAME                 BRANCH
+---------- -------------------- ---------------
+         1 ram                  comp
+         4 ramesh               mech
+         3 geeta                mech
+
+
+
+SQL> set serveroutput on;
+SQL> declare
+    rn info.rollno%type;
+    nm info.name%type;
+    bc info.branch%type;
+    cursor c_info is select * from info union select * from info1;
+    begin
+    open c_info;
+    loop
+    fetch c_info into rn,nm,bc;
+   exit when c_info%notfound;
+   insert into info1 values(rn,nm,bc);
+   dbms_output.put_line(rn ||' ' ||nm||' ' ||bc);
+   end loop;
+   close c_info;
+   end;
+   /
+1 ram comp
+2 shyam etc
+3 geeta mech
+4 ramesh mech
+
+PL/SQL procedure successfully completed.
+
+
+
+
+
+ 6
+down vote
+accepted
+	
+
+You can do a MERGE by selecting the cursor's data from DUAL. For example
+
+Create a source and destination table with some data
+
+SQL> create table src ( col1 number, col2 varchar2(10) );
+
+Table created.
+
+SQL> create table dest( col1 number, col2 varchar2(10) );
+
+Table created.
+
+SQL> insert into src values( 1, 'A' );
+
+1 row created.
+
+SQL> insert into src values( 2, 'B' );
+
+1 row created.
+
+SQL> insert into dest values( 1, 'C' );
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+Run the merge
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  begin
+  2    for x in (select * from src)
+  3    loop
+  4      merge into dest
+  5      using( select x.col1 col1, x.col2 col2
+  6               from dual ) src
+  7         on( src.col1 = dest.col1 )
+  8       when matched then
+  9         update set col2 = src.col2
+ 10       when not matched then
+ 11         insert( col1, col2 )
+ 12           values( src.col1, src.col2 );
+ 13    end loop;
+ 14* end;
+SQL> /
+
+PL/SQL procedure successfully completed.
+
+And verify that the merge did what we wanted. Row 1 was updated and row 2 was inserted.
+
+SQL> select * from dest;
+
+      COL1 COL2
+---------- ----------
+         1 A
+         2 B
+
+
+
+
+
+
+
+   declare
+       rn info.rollno%type;
+      nm info.name%type;
+       bc info.branch%type;
+        cursor c_info is select * from info minus select * from info1;
+        begin
+        open c_info;
+        loop
+       fetch c_info into rn,nm,bc;
+       exit when c_info%notfound;
+    insert into info1 values(rn,nm,bc);
+    dbms_output.put_line(rn ||' ' ||nm||' ' ||bc);
+       end loop;
+       close c_info;
+   end;
+  /
+
+SET A- SET B
+
+
+   declare
+       rn info.rollno%type;
+      nm info.name%type;
+       bc info.branch%type;
+        cursor c_info is select * from info where rollno not in(select rollno from info1);
+        begin
+        open c_info;
+        loop
+        fetch c_info into rn,nm,bc;
+       exit when c_info%notfound;
+    insert into info1 values(rn,nm,bc);
+     dbms_output.put_line(rn ||' ' ||nm||' ' ||bc);
+       end loop;
+       close c_info;
+   end;
+  
+
+
+  create or replace PROCEDURE findMin(x IN number, y IN number, z OUT number)
+
+  a number;
+  b number;
+  c number;
+  BEGIN
+  IF x < y THEN
+  z:= x;
+  ELSE
+  z:= y;
+  END IF;
+ END;
+
+
+
+
+create or replace PROCEDURE findMin(x IN number, y IN number) IS
+a number;
+b number;
+BEGIN
+IF x < y THEN
+dbms_output.put_line(x);
+ELSE
+dbms_output.put_line(y);
+END IF;
+END;
+	
+
+
+  create or replace procedure demo(r in number)
+    as
+    rn info.rollno%type;
+    nm info.name%type;
+    begin
+    select rollno,name into rn,nm from info where rollno=r;
+    dbms_output.put_line(rn||nm);
+   end;
+ 
+
+****Retriving a value from table****
+
+declare 
+rn stud.rollno%type;
+nm stud.name%type;
+bc stud.branch%type;
+begin
+select rollno, name, branch into rn, nm, bc from stud where rollno=1;
+dbms_output.put_line(rn||'   '||nm||'  '||bc);
+end;
+/
+
+
+****procedure for retriving a value form table****
+
+create or replace procedure demo(r in number) as
+rn stud.rollno%type;
+nm stud.name%type;
+bc stud.branch%type;
+begin
+select rollno, name, branch into rn, nm, bc from stud where rollno=r;
+dbms_output.put_line(rn||'   '||nm||'  '||bc);
+end;
+/ 	

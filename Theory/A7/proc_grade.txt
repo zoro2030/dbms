@@ -1,0 +1,21 @@
+create or replace procedure proc_grade( roll in number)
+        as
+      t stud_marks.tot_marks%type;
+          begin
+         select m.tot_marks into t from stud_marks m where m.rollno=roll;
+         if (t<=1500 and t>=990) then
+                update result set class='distinction' where rollno=roll;
+		dbms_output.put_line(roll);
+	        dbms_output.put_line('distinction');
+       elsif (t<=989 and t>=900 ) then
+  		update result set class='first class' where rollno=roll;
+                dbms_output.put_line(roll);       	       
+	        dbms_output.put_line('first class');
+       elsif(t<=899 and t>=825)then
+		update result set class='second class' where rollno=roll;
+		dbms_output.put_line(roll);
+		dbms_output.put_line('second class');
+       else
+	     update result set class='pass' where rollno=roll;
+       end if;
+     end;

@@ -1,0 +1,31 @@
+create or replace procedure book(r in number)
+as
+d Borr.doi%type;
+c number;
+begin
+select to_number(trunc(sysdate-doi)) into c from Borr where rollno=r;
+if c>=15 and c<=30 then
+insert into fine values (r,sysdate,'');
+update fine set amt=c*5 where rollno=r;
+elsif c>30 then 
+insert into fine values (r,sysdate,'');
+update fine set amt=c*50 where rollno=r;
+
+end if;
+update Borr set st='R' where rollno=r; 
+
+exception 
+when no_data_found then
+dbms_output.put_line('ERROR');
+end;
+
+
+
+
+
+
+update Borro set st='R' where roll=r; 
+
+insert into borro values (4,'shyam', to_date('20170629','yyyymmdd'), 'CN','I');
+
+

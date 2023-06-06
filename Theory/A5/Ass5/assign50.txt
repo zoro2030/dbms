@@ -1,0 +1,85 @@
+
+create or replace procedure book(r in number)
+as
+c number;
+begin
+select to_number(trunc(sysdate-doi)) into c from Borr  where rollno=r;
+
+if c >=15 and c<=30 then
+c:=c-15;
+insert into fine values (r,sysdate,'');
+update fine set amt=c*5 where rollno=r;
+elsif c>30 then 
+c:=c-30;
+insert into fine values (r,sysdate,'');
+update fine set amt=(c*50)+75 where rollno=r;
+end if;
+update Borr set status='R' where rollno=r; 
+exception 
+when no_data_found then
+dbms_output.put_line('ERROR Data Not Found');
+end;
+
+
+
+
+
+
+exception 
+when no_data_found then
+dbms_output.put_line('ERROR');
+
+exception 
+when no_data_found then
+dbms_output.put_line('ERROR');
+
+
+d Borr.doi%type;
+dbms_output.put_line(c);
+
+
+
+
+dbms_output.put_line(c);
+insert into borr values (4,'shyam', to_date('20170629','yyyymmdd'), 'CN','I');
+
+
+
+0-15 no fine
+16-30 5 rs per day fine   
+> 30 50rs per day fine
+15*5=75
+2*50=100
+
+
+
+23 
+
+23-15=8
+8*5=40
+
+15*5
+
+33
+33-30=3
+(3*50)+75=225
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

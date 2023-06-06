@@ -1,0 +1,159 @@
+
+
+
+SQL> create table stud123(roll number primary key,name varchar2(30),b_name varchar2(20),no_of_copy n
+umber);
+
+Table created.
+
+
+SQL> insert into stud123 values(&roll,'&name','&b_name',&no_of_copy);
+Enter value for roll: 1
+Enter value for name: kishori
+Enter value for b_name: c
+Enter value for no_of_copy: 6
+old   1: insert into stud123 values(&roll,'&name','&b_name',&no_of_copy)
+new   1: insert into stud123 values(1,'kishori','c',6)
+
+1 row created.
+
+SQL> /
+Enter value for roll: 2
+Enter value for name: pooja
+Enter value for b_name: c++
+Enter value for no_of_copy: 8
+old   1: insert into stud123 values(&roll,'&name','&b_name',&no_of_copy)
+new   1: insert into stud123 values(2,'pooja','c++',8)
+
+1 row created.
+
+SQL> /
+Enter value for roll: 3
+Enter value for name: arati
+Enter value for b_name: java
+Enter value for no_of_copy: 7
+old   1: insert into stud123 values(&roll,'&name','&b_name',&no_of_copy)
+new   1: insert into stud123 values(3,'arati','java',7)
+
+1 row created.
+
+SQL> insert into stud124(roll,b_name) values(&roll,'
+  2  &b_name');
+Enter value for roll: 1
+old   1: insert into stud124(roll,b_name) values(&roll,'
+new   1: insert into stud124(roll,b_name) values(1,'
+Enter value for b_name: c
+old   2: &b_name')
+new   2: c')
+
+1 row created.
+
+SQL> /
+Enter value for roll: 2
+old   1: insert into stud124(roll,b_name) values(&roll,'
+new   1: insert into stud124(roll,b_name) values(2,'
+Enter value for b_name: c++
+old   2: &b_name')
+new   2: c++')
+
+1 row created.
+
+SQL> /
+Enter value for roll: 3
+old   1: insert into stud124(roll,b_name) values(&roll,'
+new   1: insert into stud124(roll,b_name) values(3,'
+Enter value for b_name: java
+old   2: &b_name')
+new   2: java')
+
+1 row created.
+
+SQL> select * from stud123;
+
+      ROLL NAME                           B_NAME               NO_OF_COPY
+---------- ------------------------------ -------------------- ----------
+         1 kishori                        c                             6
+         2 pooja                          c++                           8
+         3 arati                          java                          7
+
+
+SQL> create table stud124(roll number primary key,b_name varchar2(20),no_of_copy number,constraint f
+kk foreign key(roll) references stud123(roll));
+
+Table created.
+
+SQL> insert into stud124(roll,b_name) values(&roll,'&b_name');
+Enter value for roll: 1
+Enter value for b_name: c
+old   1: insert into stud124(roll,b_name) values(&roll,'&b_name')
+new   1: insert into stud124(roll,b_name) values(1,'c')
+
+1 row created.
+
+SQL> /
+Enter value for roll: 2
+Enter value for b_name: c++
+old   1: insert into stud124(roll,b_name) values(&roll,'&b_name')
+new   1: insert into stud124(roll,b_name) values(2,'c++')
+
+1 row created.
+
+SQL> /
+Enter value for roll: 3
+Enter value for b_name: java
+old   1: insert into stud124(roll,b_name) values(&roll,'&b_name')
+new   1: insert into stud124(roll,b_name) values(3,'java')
+
+1 row created.
+
+SQL> select * from stud124;
+
+      ROLL B_NAME               NO_OF_COPY
+---------- -------------------- ----------
+         1 c
+         2 c++
+         3 java
+
+SQL> select * from stud123;
+
+      ROLL NAME                           B_NAME               NO_OF_COPY
+---------- ------------------------------ -------------------- ----------
+         1 kishori                        c                             6
+         2 pooja                          c++                           8
+         3 arati                          java                          7
+
+SQL> ed
+SP2-0110: Cannot create save file "afiedt.buf"
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create or replace trigger lib_trig after delete or insert or update on stud123
+  2  references old as o new as n
+  3  for each row
+  4  begin
+  5  update stud124 set no_of_copy=:o.no_of_copy where roll=:o.roll;
+  6  dbms_output.put_line('Old copies = '|| :o.no_of_copy);
+  7* end;
+SQL> /
+
+Trigger created.
+
+SQL> update stud123 set no_of_copy=12 where roll=1;
+
+1 row updated.
+
+SQL> select * from stud123;
+
+      ROLL NAME                           B_NAME               NO_OF_COPY
+---------- ------------------------------ -------------------- ----------
+         1 kishori                        c                            12
+         2 pooja                          c++                           8
+         3 arati                          java                          7
+
+SQL> select * from stud124;
+
+      ROLL B_NAME               NO_OF_COPY
+---------- -------------------- ----------
+         1 c                             6
+         2 c++
+         3 java
